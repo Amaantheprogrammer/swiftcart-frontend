@@ -3,7 +3,7 @@ import authApi from "../api/authApi";
 import usersApi from "../api/usersApi";
 import apiClient from "../api/client";
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -109,5 +109,3 @@ export const useAuth = () => {
   }
   return context;
 };
-
-export default AuthContext;
