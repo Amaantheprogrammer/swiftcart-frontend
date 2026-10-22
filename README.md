@@ -14,7 +14,7 @@
 
 A high-performance, dark-themed, responsive e-commerce web application engineered to interface with the **SwiftCart Spring Boot 3.5** multi-tier marketplace backend.
 
-[🚀 Live Vercel App](https://swiftcart-frontend-lake.vercel.app/) • [🐙 GitHub Repository](https://github.com/Amaantheprogrammer/swiftcart-frontend)
+[🚀 Live Vercel App](https://swiftcart-app.vercel.app/) • [🐙 GitHub Repository](https://github.com/Amaantheprogrammer/swiftcart-frontend)
 
 </div>
 
