@@ -1,13 +1,20 @@
-# 🛒 SwiftCart Frontend
-
 <div align="center">
 
+# 🛒 SwiftCart Frontend
+
+</div>
+
+<div align="center">
+  
 [![React 19](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Spring Boot Backend](https://img.shields.io/badge/Spring_Boot-3.5_Backend-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live_Deployment-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://swiftcart-frontend-lake.vercel.app/)
 
 A high-performance, dark-themed, responsive e-commerce web application engineered to interface with the **SwiftCart Spring Boot 3.5** multi-tier marketplace backend.
+
+[🚀 Live Vercel App](https://swiftcart-frontend-lake.vercel.app/) • [🐙 GitHub Repository](https://github.com/Amaantheprogrammer/swiftcart-frontend)
 
 </div>
 
@@ -52,6 +59,7 @@ A high-performance, dark-themed, responsive e-commerce web application engineere
 
 ---
 
+## 🛠️ Project Structure
 ## 🛠️ Project Structure
 
 ```
