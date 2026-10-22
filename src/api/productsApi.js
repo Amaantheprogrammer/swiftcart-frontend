@@ -63,6 +63,22 @@ export const productsApi = {
   async delete(id) {
     return await apiClient.delete(`/products/${id}`);
   },
+
+  async approve(id) {
+    return await apiClient.put(`/products/${id}/approve`);
+  },
+
+  async getPending(page = 0, size = 20) {
+    const data = await apiClient.get(`/products/pending?page=${page}&size=${size}`);
+    if (Array.isArray(data)) return { content: data, totalElements: data.length, totalPages: 1 };
+    return data;
+  },
+
+  async getAllAdmin(page = 0, size = 20) {
+    const data = await apiClient.get(`/products/admin?page=${page}&size=${size}`);
+    if (Array.isArray(data)) return { content: data, totalElements: data.length, totalPages: 1 };
+    return data;
+  },
 };
 
 export default productsApi;

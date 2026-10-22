@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
@@ -14,16 +15,12 @@ import {
   Menu,
   X,
   ChevronDown,
-  Sparkles,
 } from "lucide-react";
 import { RoleBadge } from "../common/Badge";
 
-export const Navbar = ({
-  currentView,
-  setCurrentView,
-  onOpenAuth,
-  onOpenProfile,
-}) => {
+export const Navbar = ({ onOpenAuth, onOpenProfile }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAuthenticated, isAdmin, isSeller, logout } = useAuth();
   const { itemCount, totalAmount, setIsCartOpen } = useCart();
   const { itemCount: wishlistCount, setIsWishlistOpen } = useWishlist();
@@ -31,10 +28,17 @@ export const Navbar = ({
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleNavClick = (view) => {
-    setCurrentView(view);
+  const currentPath = location.pathname;
+
+  const handleNavClick = (path) => {
+    navigate(path);
     setIsMobileMenuOpen(false);
     setIsUserMenuOpen(false);
+  };
+
+  const isActive = (path) => {
+    if (path === "/") return currentPath === "/";
+    return currentPath.startsWith(path);
   };
 
   return (
@@ -42,8 +46,8 @@ export const Navbar = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
           {/* Logo */}
-          <div
-            onClick={() => handleNavClick("catalog")}
+          <Link
+            to="/"
             className="flex items-center gap-3 cursor-pointer group"
           >
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-all">
@@ -62,14 +66,14 @@ export const Navbar = ({
                 High-Performance Marketplace
               </p>
             </div>
-          </div>
+          </Link>
 
           {/* Center Navigation Links (Desktop) */}
           <nav className="hidden md:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800/80">
             <button
-              onClick={() => handleNavClick("catalog")}
+              onClick={() => handleNavClick("/")}
               className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                currentView === "catalog"
+                isActive("/") && currentPath === "/"
                   ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
                   : "text-slate-300 hover:text-white hover:bg-slate-800/50"
               }`}
@@ -79,9 +83,9 @@ export const Navbar = ({
 
             {isAuthenticated && (
               <button
-                onClick={() => handleNavClick("orders")}
+                onClick={() => handleNavClick("/orders")}
                 className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                  currentView === "orders"
+                  isActive("/orders")
                     ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
                     : "text-slate-300 hover:text-white hover:bg-slate-800/50"
                 }`}
@@ -93,9 +97,9 @@ export const Navbar = ({
 
             {isSeller && (
               <button
-                onClick={() => handleNavClick("seller")}
+                onClick={() => handleNavClick("/seller")}
                 className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                  currentView === "seller"
+                  isActive("/seller")
                     ? "bg-purple-600 text-white shadow-md shadow-purple-600/30"
                     : "text-purple-300 hover:text-white hover:bg-purple-950/30"
                 }`}
@@ -107,9 +111,9 @@ export const Navbar = ({
 
             {isAdmin && (
               <button
-                onClick={() => handleNavClick("admin")}
+                onClick={() => handleNavClick("/admin")}
                 className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                  currentView === "admin"
+                  isActive("/admin")
                     ? "bg-rose-600 text-white shadow-md shadow-rose-600/30"
                     : "text-rose-300 hover:text-white hover:bg-rose-950/30"
                 }`}
@@ -188,11 +192,11 @@ export const Navbar = ({
                         className="w-full px-4 py-2 text-xs flex items-center gap-2.5 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors text-left"
                       >
                         <User className="w-4 h-4 text-indigo-400" />
-                        <span>Profile & Settings</span>
+                        <span>Profile &amp; Settings</span>
                       </button>
 
                       <button
-                        onClick={() => handleNavClick("orders")}
+                        onClick={() => handleNavClick("/orders")}
                         className="w-full px-4 py-2 text-xs flex items-center gap-2.5 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors text-left"
                       >
                         <Package className="w-4 h-4 text-blue-400" />
@@ -201,7 +205,7 @@ export const Navbar = ({
 
                       {isSeller && (
                         <button
-                          onClick={() => handleNavClick("seller")}
+                          onClick={() => handleNavClick("/seller")}
                           className="w-full px-4 py-2 text-xs flex items-center gap-2.5 hover:bg-purple-950/40 text-purple-300 hover:text-white transition-colors text-left"
                         >
                           <Store className="w-4 h-4 text-purple-400" />
@@ -211,7 +215,7 @@ export const Navbar = ({
 
                       {isAdmin && (
                         <button
-                          onClick={() => handleNavClick("admin")}
+                          onClick={() => handleNavClick("/admin")}
                           className="w-full px-4 py-2 text-xs flex items-center gap-2.5 hover:bg-rose-950/40 text-rose-300 hover:text-white transition-colors text-left"
                         >
                           <ShieldCheck className="w-4 h-4 text-rose-400" />
@@ -260,18 +264,18 @@ export const Navbar = ({
       {isMobileMenuOpen && (
         <div className="md:hidden border-t border-slate-800 bg-slate-950/95 backdrop-blur-2xl px-4 py-4 space-y-2 animate-fade-in">
           <button
-            onClick={() => handleNavClick("catalog")}
+            onClick={() => handleNavClick("/")}
             className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-left transition-colors ${
-              currentView === "catalog" ? "bg-indigo-600 text-white" : "text-slate-300 hover:bg-slate-900"
+              currentPath === "/" ? "bg-indigo-600 text-white" : "text-slate-300 hover:bg-slate-900"
             }`}
           >
             Marketplace
           </button>
           {isAuthenticated && (
             <button
-              onClick={() => handleNavClick("orders")}
+              onClick={() => handleNavClick("/orders")}
               className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-left transition-colors ${
-                currentView === "orders" ? "bg-indigo-600 text-white" : "text-slate-300 hover:bg-slate-900"
+                isActive("/orders") ? "bg-indigo-600 text-white" : "text-slate-300 hover:bg-slate-900"
               }`}
             >
               My Orders
@@ -279,9 +283,9 @@ export const Navbar = ({
           )}
           {isSeller && (
             <button
-              onClick={() => handleNavClick("seller")}
+              onClick={() => handleNavClick("/seller")}
               className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-left transition-colors ${
-                currentView === "seller" ? "bg-purple-600 text-white" : "text-purple-300 hover:bg-slate-900"
+                isActive("/seller") ? "bg-purple-600 text-white" : "text-purple-300 hover:bg-slate-900"
               }`}
             >
               Seller Portal
@@ -289,15 +293,14 @@ export const Navbar = ({
           )}
           {isAdmin && (
             <button
-              onClick={() => handleNavClick("admin")}
+              onClick={() => handleNavClick("/admin")}
               className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-left transition-colors ${
-                currentView === "admin" ? "bg-rose-600 text-white" : "text-rose-300 hover:bg-slate-900"
+                isActive("/admin") ? "bg-rose-600 text-white" : "text-rose-300 hover:bg-slate-900"
               }`}
             >
               Admin Control Center
             </button>
           )}
-
         </div>
       )}
     </header>

@@ -2,25 +2,47 @@ import React, { useState, useEffect, useCallback } from "react";
 import categoriesApi from "../../api/categoriesApi";
 import ordersApi from "../../api/ordersApi";
 import usersApi from "../../api/usersApi";
+import productsApi from "../../api/productsApi";
 import Modal from "../common/Modal";
-import { OrderStatusBadge, PaymentStatusBadge, RoleBadge } from "../common/Badge";
-import { ShieldCheck, Layers, Package, Users, Plus, Edit3, Trash2, RefreshCw, Search, Check } from "lucide-react";
+import { OrderStatusBadge, PaymentStatusBadge, RoleBadge, StockBadge } from "../common/Badge";
+import {
+  ShieldCheck,
+  Layers,
+  Package,
+  Users,
+  Plus,
+  Edit3,
+  Trash2,
+  RefreshCw,
+  Search,
+  CheckCircle2,
+  Clock,
+  XCircle,
+  Eye,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { useToast } from "../../context/ToastContext";
+import { useNavigate } from "react-router-dom";
 
 export const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState("categories"); // 'categories', 'orders', 'users'
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("approvals"); // 'approvals', 'categories', 'orders', 'users'
   const [categories, setCategories] = useState([]);
   const [orders, setOrders] = useState([]);
   const [users, setUsers] = useState([]);
+  const [pendingProducts, setPendingProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Product approval sub-filter: 'pending' | 'all'
+  const [approvalFilter, setApprovalFilter] = useState("pending");
+  const [approvingId, setApprovingId] = useState(null);
 
   // Category Modal
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [categoryNameInput, setCategoryNameInput] = useState("");
-
-  // Orders Filter
-  const [userIdFilter, setUserIdFilter] = useState("");
 
   // Users Filter
   const [userEmailSearch, setUserEmailSearch] = useState("");
@@ -30,15 +52,19 @@ export const AdminDashboard = () => {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [cats, ords, usrs] = await Promise.all([
+      const [cats, ords, usrs, pending, allProd] = await Promise.all([
         categoriesApi.getAll().catch(() => []),
         ordersApi.getAll(0, 50).catch(() => ({ content: [] })),
         usersApi.getAll().catch(() => []),
+        productsApi.getPending().catch(() => ({ content: [] })),
+        productsApi.getAllAdmin().catch(() => ({ content: [] })),
       ]);
       setCategories(Array.isArray(cats) ? cats : []);
       const ordList = ords.content || (Array.isArray(ords) ? ords : []);
       setOrders(ordList);
       setUsers(Array.isArray(usrs) ? usrs : []);
+      setPendingProducts(pending.content || (Array.isArray(pending) ? pending : []));
+      setAllProducts(allProd.content || (Array.isArray(allProd) ? allProd : []));
     } catch (err) {
       error(err.message || "Failed to load admin data");
     } finally {
@@ -50,11 +76,24 @@ export const AdminDashboard = () => {
     loadData();
   }, [loadData]);
 
-  // Category handlers
+  // ─── Product Approval handlers ───────────────────────────────────────────
+  const handleApproveProduct = async (productId, productName) => {
+    setApprovingId(productId);
+    try {
+      await productsApi.approve(productId);
+      success(`"${productName}" approved and published to marketplace!`);
+      await loadData();
+    } catch (err) {
+      error(err.message || "Failed to approve product");
+    } finally {
+      setApprovingId(null);
+    }
+  };
+
+  // ─── Category handlers ────────────────────────────────────────────────────
   const handleSaveCategory = async (e) => {
     e.preventDefault();
     if (!categoryNameInput.trim()) return;
-
     try {
       if (editingCategory) {
         await categoriesApi.update(editingCategory.id, categoryNameInput);
@@ -73,9 +112,12 @@ export const AdminDashboard = () => {
   };
 
   const handleDeleteCategory = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to delete category "${name}"? If products belong to this category, deletion will be blocked by backend.`)) {
+    if (
+      !window.confirm(
+        `Are you sure you want to delete category "${name}"? If products belong to this category, deletion will be blocked by backend.`
+      )
+    )
       return;
-    }
     try {
       await categoriesApi.delete(id);
       success(`Deleted category "${name}"`);
@@ -85,7 +127,7 @@ export const AdminDashboard = () => {
     }
   };
 
-  // Payment status handler
+  // ─── Payment status handler ──────────────────────────────────────────────
   const handleUpdatePaymentStatus = async (orderId, newStatus) => {
     try {
       await ordersApi.updatePaymentStatus(orderId, newStatus);
@@ -96,7 +138,7 @@ export const AdminDashboard = () => {
     }
   };
 
-  // User search handler
+  // ─── User search handler ─────────────────────────────────────────────────
   const handleSearchUsers = async () => {
     try {
       setLoading(true);
@@ -108,6 +150,39 @@ export const AdminDashboard = () => {
       setLoading(false);
     }
   };
+
+  const displayedProducts = approvalFilter === "pending" ? pendingProducts : allProducts;
+
+  const TABS = [
+    {
+      id: "approvals",
+      label: "Product Approvals",
+      icon: <CheckCircle2 className="w-4 h-4" />,
+      count: pendingProducts.length,
+      color: "amber",
+    },
+    {
+      id: "categories",
+      label: "Categories",
+      icon: <Layers className="w-4 h-4" />,
+      count: categories.length,
+      color: "rose",
+    },
+    {
+      id: "orders",
+      label: "Platform Orders",
+      icon: <Package className="w-4 h-4" />,
+      count: orders.length,
+      color: "rose",
+    },
+    {
+      id: "users",
+      label: "Users Directory",
+      icon: <Users className="w-4 h-4" />,
+      count: users.length,
+      color: "rose",
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -122,7 +197,7 @@ export const AdminDashboard = () => {
             Administrator Command Center
           </h2>
           <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl">
-            Control global taxonomy & categories, inspect cross-system transactional orders, manage financial settlement statuses, and monitor registered identities.
+            Review &amp; approve seller products, manage catalog taxonomy, inspect platform orders, and monitor registered identities.
           </p>
         </div>
 
@@ -136,53 +211,208 @@ export const AdminDashboard = () => {
         </button>
       </div>
 
+      {/* Pending alert bar */}
+      {pendingProducts.length > 0 && activeTab !== "approvals" && (
+        <div
+          onClick={() => setActiveTab("approvals")}
+          className="flex items-center gap-3 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 cursor-pointer hover:bg-amber-500/15 transition-colors"
+        >
+          <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+            <Clock className="w-4 h-4 text-amber-400" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-bold text-amber-300">
+              {pendingProducts.length} product{pendingProducts.length !== 1 ? "s" : ""} awaiting your approval
+            </p>
+            <p className="text-xs text-amber-400/70 mt-0.5">Click to review pending products →</p>
+          </div>
+        </div>
+      )}
+
       {/* Tabs */}
-      <div className="flex border-b border-slate-800">
-        <button
-          onClick={() => setActiveTab("categories")}
-          className={`pb-3 px-4 text-sm font-semibold transition-colors flex items-center gap-2 relative ${
-            activeTab === "categories" ? "text-rose-400" : "text-slate-400 hover:text-slate-300"
-          }`}
-        >
-          <Layers className="w-4 h-4" />
-          Categories ({categories.length})
-          {activeTab === "categories" && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-rose-500 rounded-full" />
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab("orders")}
-          className={`pb-3 px-4 text-sm font-semibold transition-colors flex items-center gap-2 relative ${
-            activeTab === "orders" ? "text-rose-400" : "text-slate-400 hover:text-slate-300"
-          }`}
-        >
-          <Package className="w-4 h-4" />
-          Platform Orders ({orders.length})
-          {activeTab === "orders" && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-rose-500 rounded-full" />
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab("users")}
-          className={`pb-3 px-4 text-sm font-semibold transition-colors flex items-center gap-2 relative ${
-            activeTab === "users" ? "text-rose-400" : "text-slate-400 hover:text-slate-300"
-          }`}
-        >
-          <Users className="w-4 h-4" />
-          Users Directory ({users.length})
-          {activeTab === "users" && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-rose-500 rounded-full" />
-          )}
-        </button>
+      <div className="flex flex-wrap border-b border-slate-800 gap-0.5">
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`pb-3 px-4 text-sm font-semibold transition-colors flex items-center gap-2 relative ${
+              activeTab === tab.id
+                ? tab.id === "approvals"
+                  ? "text-amber-400"
+                  : "text-rose-400"
+                : "text-slate-400 hover:text-slate-300"
+            }`}
+          >
+            {tab.icon}
+            <span>{tab.label}</span>
+            {tab.count > 0 && (
+              <span
+                className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+                  tab.id === "approvals" && pendingProducts.length > 0
+                    ? "bg-amber-500/20 text-amber-300"
+                    : "bg-slate-800 text-slate-400"
+                }`}
+              >
+                {tab.count}
+              </span>
+            )}
+            {activeTab === tab.id && (
+              <span
+                className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${
+                  tab.id === "approvals" ? "bg-amber-500" : "bg-rose-500"
+                }`}
+              />
+            )}
+          </button>
+        ))}
       </div>
 
-      {/* Categories View */}
+      {/* ══ TAB: Product Approvals ══════════════════════════════════════════════ */}
+      {activeTab === "approvals" && (
+        <div className="space-y-5">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <h3 className="text-base font-bold text-white">Product Review Queue</h3>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Approve seller-submitted products to publish them to the public marketplace.
+              </p>
+            </div>
+
+            {/* Sub-filter toggle */}
+            <div className="flex items-center p-1 rounded-xl bg-slate-900 border border-slate-800">
+              <button
+                onClick={() => setApprovalFilter("pending")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  approvalFilter === "pending"
+                    ? "bg-amber-500/20 text-amber-300 shadow-sm"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                Pending ({pendingProducts.length})
+              </button>
+              <button
+                onClick={() => setApprovalFilter("all")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  approvalFilter === "all"
+                    ? "bg-slate-700 text-white shadow-sm"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                All Products ({allProducts.length})
+              </button>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {[1, 2, 3].map((n) => (
+                <div key={n} className="rounded-2xl glass-card p-4 animate-pulse h-40" />
+              ))}
+            </div>
+          ) : displayedProducts.length === 0 ? (
+            <div className="p-12 rounded-2xl glass-panel text-center space-y-3">
+              <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
+              <h4 className="text-base font-bold text-white">
+                {approvalFilter === "pending" ? "All caught up!" : "No products found"}
+              </h4>
+              <p className="text-xs text-slate-400">
+                {approvalFilter === "pending"
+                  ? "There are no products currently awaiting approval."
+                  : "No products have been submitted yet."}
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {displayedProducts.map((p) => (
+                <div
+                  key={p.id}
+                  className={`p-4 rounded-2xl glass-card flex flex-col justify-between gap-3 transition-all ${
+                    p.approved
+                      ? "border-emerald-500/20 hover:border-emerald-500/30"
+                      : "border-amber-500/20 hover:border-amber-500/30"
+                  }`}
+                >
+                  {/* Product card header */}
+                  <div className="flex gap-3">
+                    <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-900 shrink-0 border border-slate-800">
+                      <img
+                        src={
+                          p.productImages?.[0]?.imageUrl ||
+                          "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200&q=80"
+                        }
+                        alt={p.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200&q=80";
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="text-[11px] font-mono text-slate-500">ID #{p.id}</span>
+                        {p.approved ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                            <CheckCircle2 className="w-3 h-3" />
+                            Approved
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/25">
+                            <Clock className="w-3 h-3" />
+                            Pending
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="font-bold text-sm text-white truncate mt-0.5">{p.name}</h4>
+                      <p className="text-xs text-indigo-400 font-bold">${Number(p.price).toFixed(2)}</p>
+                      {p.userName && (
+                        <p className="text-[11px] text-slate-500 mt-0.5">by {p.userName}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 pt-2 border-t border-slate-800/60">
+                    <span className="text-[11px] text-slate-500 mr-auto">{p.categoryName}</span>
+                    <StockBadge stock={p.stockQuantity} />
+
+                    {/* View button */}
+                    <button
+                      onClick={() => navigate(`/products/${p.id}`)}
+                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+                      title="View Product"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                    </button>
+
+                    {/* Approve button */}
+                    {!p.approved && (
+                      <button
+                        onClick={() => handleApproveProduct(p.id, p.name)}
+                        disabled={approvingId === p.id}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 text-emerald-400 hover:text-emerald-300 text-xs font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none"
+                        title="Approve & Publish"
+                      >
+                        {approvingId === p.id ? (
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                        )}
+                        Approve
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ══ TAB: Categories ════════════════════════════════════════════════════ */}
       {activeTab === "categories" && (
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <p className="text-xs text-slate-400">
-              Manage product hierarchy and store catalog categories.
-            </p>
+            <p className="text-xs text-slate-400">Manage product hierarchy and store catalog categories.</p>
             <button
               onClick={() => {
                 setEditingCategory(null);
@@ -233,11 +463,11 @@ export const AdminDashboard = () => {
         </div>
       )}
 
-      {/* Orders View */}
+      {/* ══ TAB: Orders ════════════════════════════════════════════════════════ */}
       {activeTab === "orders" && (
         <div className="space-y-4">
           <p className="text-xs text-slate-400">
-            System-wide paginated order management with payment status overrides (Spring RestClient Digital Banking synchronization).
+            System-wide paginated order management with payment status overrides.
           </p>
 
           <div className="space-y-3">
@@ -247,13 +477,16 @@ export const AdminDashboard = () => {
                 className="p-4 sm:p-5 rounded-2xl glass-card flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
               >
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-bold text-white text-sm">Order #{o.id}</span>
                     <OrderStatusBadge status={o.orderStatus} />
                     <PaymentStatusBadge status={o.paymentStatus} />
                   </div>
                   <p className="text-xs text-slate-400 mt-1">
-                    Customer: <strong className="text-slate-200">{o.userName || `User #${o.userId}`}</strong> • Amount: <strong className="text-white">${Number(o.totalAmount).toFixed(2)}</strong> • Method: {o.paymentMethod}
+                    Customer:{" "}
+                    <strong className="text-slate-200">{o.userName || `User #${o.userId}`}</strong> •
+                    Amount: <strong className="text-white">${Number(o.totalAmount).toFixed(2)}</strong> •
+                    Method: {o.paymentMethod}
                   </p>
                 </div>
 
@@ -276,7 +509,7 @@ export const AdminDashboard = () => {
         </div>
       )}
 
-      {/* Users View */}
+      {/* ══ TAB: Users ═════════════════════════════════════════════════════════ */}
       {activeTab === "users" && (
         <div className="space-y-4">
           <div className="flex gap-2 max-w-md">
@@ -309,10 +542,7 @@ export const AdminDashboard = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {users.map((u) => (
-              <div
-                key={u.id}
-                className="p-4 rounded-2xl glass-card space-y-2 border border-slate-800"
-              >
+              <div key={u.id} className="p-4 rounded-2xl glass-card space-y-2 border border-slate-800">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-mono text-slate-500">User #{u.id}</span>
                   <RoleBadge role={u.role} />
