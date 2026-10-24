@@ -3,7 +3,7 @@ import apiClient from "./client";
 export const cartApi = {
   async getMyCart() {
     try {
-      return await apiClient.get("/carts/my-cart");
+      return await apiClient.get("/carts/me");
     } catch (err) {
       if (err.status === 401 || err.status === 403) {
         return { cartItems: [], total: 0 };

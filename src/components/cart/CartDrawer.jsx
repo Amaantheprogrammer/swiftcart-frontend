@@ -59,7 +59,7 @@ export const CartDrawer = ({ onProceedToCheckout }) => {
             </div>
             <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-300"
+                className="h-full bg-linear-to-r from-indigo-500 to-emerald-400 transition-all duration-300"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -182,7 +182,7 @@ export const CartDrawer = ({ onProceedToCheckout }) => {
                     if (onProceedToCheckout) onProceedToCheckout();
                   }}
                   disabled={loading}
-                  className="col-span-2 py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all active:scale-[0.98]"
+                  className="col-span-2 py-3 px-4 rounded-xl bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all active:scale-[0.98]"
                 >
                   <span>Checkout</span>
                   <ArrowRight className="w-4 h-4" />
