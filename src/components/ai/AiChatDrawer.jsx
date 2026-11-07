@@ -118,7 +118,7 @@ export const AiChatDrawer = () => {
                     {isAiOnline ? (
                       <span className="text-emerald-400 font-medium">FastAPI Service Connected</span>
                     ) : (
-                      <span className="text-amber-400 font-medium">Service Offline (:8000)</span>
+                      <span className="text-amber-400 font-medium">Connecting to AI Cloud...</span>
                     )}
                   </span>
                 </div>
@@ -268,14 +268,11 @@ export const AiChatDrawer = () => {
               <div className="p-3.5 rounded-2xl bg-amber-950/20 border border-amber-500/30 text-amber-300 text-xs space-y-2">
                 <div className="flex items-center gap-2 font-semibold">
                   <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>SwiftCart AI Service Offline</span>
+                  <span>SwiftCart AI Service Notice</span>
                 </div>
                 <p className="text-[11px] text-slate-300 leading-relaxed">
-                  Start your local FastAPI service to chat with AI:
+                  Connecting to Render Cloud AI. Free-tier cloud instances spin down on idle and may take 30-50 seconds to wake up on the first request.
                 </p>
-                <div className="p-2 rounded-lg bg-black/50 font-mono text-[11px] text-emerald-400 select-all border border-slate-800">
-                  cd swiftcart-ai &amp;&amp; uvicorn app.main:app --port 8000
-                </div>
                 <p className="text-[10px] text-slate-400">
                   Target: <span className="font-mono text-slate-300">{aiUrl}</span>
                 </p>

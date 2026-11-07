@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const STORAGE_KEY_AI_URL = "swiftcart_ai_url";
-export const DEFAULT_AI_URL = "https://swiftcart-ai-zjyc.onrender.com/";
+export const DEFAULT_AI_URL = "https://swiftcart-ai-zjyc.onrender.com";
 
 class AiApiClient {
   constructor() {
@@ -21,14 +21,18 @@ class AiApiClient {
   getStoredUrl() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY_AI_URL);
-      return stored && stored.trim() ? stored.trim() : DEFAULT_AI_URL;
+      // If empty or previously defaulted to local 8000, use production Render AI service
+      if (!stored || stored.includes("localhost:8000") || stored.includes("127.0.0.1:8000")) {
+        return DEFAULT_AI_URL;
+      }
+      return stored.trim().replace(/\/+$/, "");
     } catch {
       return DEFAULT_AI_URL;
     }
   }
 
   setUrl(url) {
-    const cleanUrl = url && url.trim() ? url.trim() : DEFAULT_AI_URL;
+    const cleanUrl = url && url.trim() ? url.trim().replace(/\/+$/, "") : DEFAULT_AI_URL;
     this.baseUrl = cleanUrl;
     this.axiosInstance.defaults.baseURL = cleanUrl;
     try {
@@ -59,7 +63,7 @@ class AiApiClient {
 
   async checkHealth() {
     try {
-      const response = await this.axiosInstance.get("/", { timeout: 5000 });
+      const response = await this.axiosInstance.get("/", { timeout: 15000 });
       const online = response.status >= 200 && response.status < 400 && response.data?.service === "swift-cart-ai";
       this.isOnline = online || response.status === 200;
       this.notifyListeners();

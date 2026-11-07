@@ -141,7 +141,7 @@ export const AiProvider = ({ children }) => {
         const errorMsg = {
           id: `ai-err-${Date.now()}`,
           role: "assistant",
-          content: `⚠️ **Unable to communicate with SwiftCart AI**: ${err.message}\n\n*Make sure your Python AI backend is running on \`${aiUrl}\` using \`uvicorn app.main:app --port 8000\`.*`,
+          content: `⚠️ **Unable to communicate with SwiftCart AI**: ${err.message}\n\n*Target: \`${aiUrl}\`. If using Render cloud deployment, the service may be waking up from sleep. Please try sending your query again in a few seconds.*`,
           timestamp: new Date().toISOString(),
           isError: true,
         };

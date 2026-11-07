@@ -65,7 +65,7 @@ export const BackendStatusBanner = () => {
               <Sparkles className="w-3 h-3 text-indigo-400" />
               <span>AI Service:</span>
               <span className={`font-semibold ${isAiOnline ? "text-emerald-400" : "text-amber-400"}`}>
-                {isAiOnline ? "Ready" : "Offline (:8000)"}
+                {isAiOnline ? "Live" : "Connecting..."}
               </span>
             </button>
           </div>

@@ -28,7 +28,7 @@ A high-performance, dark-themed, responsive e-commerce web application engineere
   - Floating AI assistant drawer with quick suggestion chips, conversation history, and rich markdown rendering.
   - Embedded interactive product recommendation cards directly inside chat messages with "View" and "Add to Cart" shortcuts.
   - "Ask SwiftCart AI About This Product" deep-link on product pages and catalog cards.
-  - Configurable AI service host (default `http://localhost:8000`) with live ping monitor in the status banner.
+  - Configurable AI service host (default `https://swiftcart-ai-zjyc.onrender.com`) with live ping monitor in the status banner.
 - **🛡️ Rate Limiting & Resilience (HTTP 429):**
   - Graceful handling of Bucket4j rate limiting with countdown messages and `Retry-After` header extraction.
 - **🛍️ Complete Marketplace Catalog:**

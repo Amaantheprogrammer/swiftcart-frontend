@@ -173,16 +173,61 @@ export const ConfigModal = ({ isOpen, onClose }) => {
             </button>
           </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div
+              onClick={() => {
+                setCustomAiInput(DEFAULT_AI_URL);
+                updateAiUrl(DEFAULT_AI_URL);
+                success("Switched to Render Cloud AI!");
+              }}
+              className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
+                aiUrl === DEFAULT_AI_URL
+                  ? "bg-purple-950/40 border-purple-500 text-white"
+                  : "bg-slate-900/60 border-slate-800 hover:border-slate-700 text-slate-300"
+              }`}
+            >
+              <Globe className="w-4 h-4 text-purple-400 mt-0.5 shrink-0" />
+              <div className="min-w-0">
+                <p className="text-xs font-semibold">Render Cloud AI (Default)</p>
+                <p className="text-[10px] text-slate-400 font-mono truncate">
+                  swiftcart-ai-zjyc.onrender.com
+                </p>
+              </div>
+            </div>
+
+            <div
+              onClick={() => {
+                const localUrl = "http://localhost:8000";
+                setCustomAiInput(localUrl);
+                updateAiUrl(localUrl);
+                success("Switched to Local AI on port 8000!");
+              }}
+              className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
+                aiUrl === "http://localhost:8000"
+                  ? "bg-purple-950/40 border-purple-500 text-white"
+                  : "bg-slate-900/60 border-slate-800 hover:border-slate-700 text-slate-300"
+              }`}
+            >
+              <Server className="w-4 h-4 text-indigo-400 mt-0.5 shrink-0" />
+              <div className="min-w-0">
+                <p className="text-xs font-semibold">Local FastAPI Server</p>
+                <p className="text-[10px] text-slate-400 font-mono">
+                  http://localhost:8000
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div>
             <label className="text-[11px] font-medium text-slate-400 block mb-1">
-              AI Service Host Endpoint
+              Or Custom AI Host Endpoint
             </label>
             <div className="flex gap-2">
               <input
                 type="text"
                 value={customAiInput}
                 onChange={(e) => setCustomAiInput(e.target.value)}
-                placeholder="http://localhost:8000"
+                placeholder="https://swiftcart-ai-zjyc.onrender.com"
                 className="flex-1 px-3 py-2 rounded-xl glass-input text-xs font-mono"
               />
               <button
@@ -190,12 +235,9 @@ export const ConfigModal = ({ isOpen, onClose }) => {
                 onClick={handleSetAiUrl}
                 className="px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-medium text-xs transition-colors shrink-0"
               >
-                Update AI URL
+                Set AI Host
               </button>
             </div>
-            <p className="text-[10px] text-slate-500 mt-1">
-              Start with: <code className="text-slate-400 font-mono">cd swiftcart-ai &amp;&amp; uvicorn app.main:app --port 8000</code>
-            </p>
           </div>
         </div>
 
