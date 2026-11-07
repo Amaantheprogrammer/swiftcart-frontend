@@ -15,10 +15,12 @@ import {
   ChevronRight,
   Share2,
   CheckCircle2,
+  Sparkles,
 } from "lucide-react";
 import { StockBadge } from "../common/Badge";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
+import { useAi } from "../../context/AiContext";
 import { useToast } from "../../context/ToastContext";
 import productsApi from "../../api/productsApi";
 
@@ -27,6 +29,7 @@ const ProductPage = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { askAboutProduct } = useAi();
   const { error: showError } = useToast();
 
   const [product, setProduct] = useState(null);
@@ -326,6 +329,16 @@ const ProductPage = () => {
               >
                 <Heart className={`w-4 h-4 ${isLiked ? "fill-rose-500 text-rose-500" : ""}`} />
                 {isLiked ? "Remove from Wishlist" : "Save to Wishlist"}
+              </button>
+
+              {/* Ask SwiftCart AI */}
+              <button
+                type="button"
+                onClick={() => askAboutProduct(product)}
+                className="w-full py-3 px-5 rounded-2xl bg-gradient-to-r from-purple-950/70 via-indigo-950/70 to-slate-900 border border-purple-500/40 hover:border-purple-500/80 text-purple-200 hover:text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-950/30 transition-all active:scale-[0.98] group"
+              >
+                <Sparkles className="w-4 h-4 text-purple-300 group-hover:rotate-12 transition-transform" />
+                <span>Ask SwiftCart AI About This Product</span>
               </button>
             </div>
 

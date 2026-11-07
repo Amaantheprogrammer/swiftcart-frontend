@@ -1,7 +1,10 @@
 import React from "react";
 import { Sparkles, ShieldCheck, Zap, Truck, ArrowRight, Tag } from "lucide-react";
+import { useAi } from "../../context/AiContext";
 
 export const HeroBanner = ({ onExploreClick, onFeaturedClick }) => {
+  const { openAi } = useAi();
+
   return (
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-950/50 via-slate-900 to-purple-950/40 border border-indigo-500/20 p-6 sm:p-10 lg:p-12 mb-10 shadow-2xl">
       {/* Background glow orbs */}
@@ -13,7 +16,7 @@ export const HeroBanner = ({ onExploreClick, onFeaturedClick }) => {
         <div className="lg:col-span-7 space-y-5">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-semibold tracking-wide">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Spring Boot 3.5 & React 19 Powered</span>
+            <span>Spring Boot Core &amp; Gemini AI Shopping Assistant</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1]">
@@ -24,7 +27,7 @@ export const HeroBanner = ({ onExploreClick, onFeaturedClick }) => {
           </h1>
 
           <p className="text-sm sm:text-base text-slate-300 max-w-xl leading-relaxed">
-            Discover verified consumer electronics, luxury wearables, and studio accessories with stateless dual-token security, atomic stock validation, and instant bank settlement.
+            Discover verified consumer electronics, luxury wearables, and studio accessories with intelligent AI shopping recommendations, rate-limited resilience, and instant digital bank settlement.
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -34,6 +37,14 @@ export const HeroBanner = ({ onExploreClick, onFeaturedClick }) => {
             >
               <span>Explore Catalog</span>
               <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={openAi}
+              className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold transition-all shadow-xl shadow-purple-600/30 flex items-center gap-2 active:scale-[0.98]"
+            >
+              <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+              <span>Ask AI Assistant</span>
             </button>
 
             <button

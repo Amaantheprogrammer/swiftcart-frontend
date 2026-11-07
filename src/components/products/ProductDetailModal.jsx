@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import Modal from "../common/Modal";
-import { Heart, ShoppingCart, Zap, Star, ShieldCheck, Truck, RotateCcw } from "lucide-react";
+import { Heart, ShoppingCart, Zap, Star, ShieldCheck, Truck, RotateCcw, Sparkles } from "lucide-react";
 import { StockBadge } from "../common/Badge";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
+import { useAi } from "../../context/AiContext";
 
 export const ProductDetailModal = ({ product, isOpen, onClose, onQuickBuy }) => {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { askAboutProduct } = useAi();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
@@ -178,6 +180,18 @@ export const ProductDetailModal = ({ product, isOpen, onClose, onQuickBuy }) => 
                 <span>Instant Buy</span>
               </button>
             </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                askAboutProduct(product);
+              }}
+              className="w-full py-2.5 px-4 rounded-xl bg-purple-950/40 hover:bg-purple-900/60 border border-purple-500/30 text-purple-200 hover:text-white text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple-300" />
+              <span>Ask SwiftCart AI About This Item</span>
+            </button>
           </div>
         </div>
       </div>

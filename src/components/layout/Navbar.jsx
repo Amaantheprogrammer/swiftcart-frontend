@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
+import { useAi } from "../../context/AiContext";
 import {
   ShoppingBag,
   Heart,
@@ -15,6 +16,7 @@ import {
   Menu,
   X,
   ChevronDown,
+  Sparkles,
 } from "lucide-react";
 import { RoleBadge } from "../common/Badge";
 
@@ -24,6 +26,7 @@ export const Navbar = ({ onOpenAuth, onOpenProfile }) => {
   const { user, isAuthenticated, isAdmin, isSeller, logout } = useAuth();
   const { itemCount, totalAmount, setIsCartOpen } = useCart();
   const { itemCount: wishlistCount, setIsWishlistOpen } = useWishlist();
+  const { openAi, isAiOnline } = useAi();
 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -126,6 +129,16 @@ export const Navbar = ({ onOpenAuth, onOpenProfile }) => {
 
           {/* Right Action Icons */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* AI Assistant Button */}
+            <button
+              onClick={openAi}
+              className="flex items-center gap-1.5 px-3 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-purple-950/70 to-indigo-950/70 hover:from-purple-900/90 hover:to-indigo-900/90 border border-purple-500/40 text-purple-200 hover:text-white text-xs font-semibold shadow-md shadow-purple-950/40 transition-all active:scale-95 group"
+              title="Launch SwiftCart AI Shopping Assistant"
+            >
+              <Sparkles className="w-4 h-4 text-purple-300 group-hover:rotate-12 transition-transform" />
+              <span className="hidden sm:inline">AI Assistant</span>
+              <span className={`w-1.5 h-1.5 rounded-full ${isAiOnline ? "bg-emerald-400" : "bg-amber-400"}`} />
+            </button>
 
             {/* Wishlist Button */}
             <button
@@ -263,6 +276,20 @@ export const Navbar = ({ onOpenAuth, onOpenProfile }) => {
       {/* Mobile Navigation Drawer */}
       {isMobileMenuOpen && (
         <div className="md:hidden border-t border-slate-800 bg-slate-950/95 backdrop-blur-2xl px-4 py-4 space-y-2 animate-fade-in">
+          <button
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              openAi();
+            }}
+            className="w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-left transition-colors bg-gradient-to-r from-purple-900/60 to-indigo-900/60 border border-purple-500/30 text-purple-200 flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-purple-300" />
+              <span>SwiftCart AI Assistant</span>
+            </div>
+            <span className={`w-2 h-2 rounded-full ${isAiOnline ? "bg-emerald-400" : "bg-amber-400"}`} />
+          </button>
+
           <button
             onClick={() => handleNavClick("/")}
             className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-left transition-colors ${

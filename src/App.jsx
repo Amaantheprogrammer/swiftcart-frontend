@@ -5,13 +5,13 @@ import {
   Route,
   Navigate,
   useNavigate,
-  useLocation,
 } from "react-router-dom";
 
-import { ToastProvider, useToast } from "./context/ToastContext";
+import { ToastProvider } from "./context/ToastContext";
 import { ConfigProvider } from "./context/ConfigContext";
+import { AiProvider } from "./context/AiContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { CartProvider, useCart } from "./context/CartContext";
+import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 
 import BackendStatusBanner from "./components/layout/BackendStatusBanner";
@@ -24,6 +24,8 @@ import ProductPage from "./components/products/ProductPage";
 import CartDrawer from "./components/cart/CartDrawer";
 import CheckoutModal from "./components/cart/CheckoutModal";
 import WishlistDrawer from "./components/wishlist/WishlistDrawer";
+import AiChatDrawer from "./components/ai/AiChatDrawer";
+import AiFloatingButton from "./components/ai/AiFloatingButton";
 
 import OrdersList from "./components/orders/OrdersList";
 import SellerDashboard from "./components/seller/SellerDashboard";
@@ -62,9 +64,7 @@ const AppShell = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const location = useLocation();
   const navigate = useNavigate();
-  const { setIsCartOpen } = useCart();
 
   const handleProceedCartCheckout = () => {
     setDirectCheckoutItem(null);
@@ -129,6 +129,10 @@ const AppShell = () => {
 
       <WishlistDrawer />
 
+      <AiChatDrawer />
+
+      <AiFloatingButton />
+
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => {
@@ -162,7 +166,9 @@ export default function App() {
           <AuthProvider>
             <CartProvider>
               <WishlistProvider>
-                <AppShell />
+                <AiProvider>
+                  <AppShell />
+                </AiProvider>
               </WishlistProvider>
             </CartProvider>
           </AuthProvider>

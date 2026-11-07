@@ -18,10 +18,11 @@ class ApiClient {
     this.refreshPromise = null;
     this.listeners = new Set();
 
-    // Create Axios Instance
+    // Create Axios Instance with credentials for HttpOnly refresh cookies
     this.axiosInstance = axios.create({
       baseURL: this.baseUrl,
       timeout: 300000,
+      withCredentials: true,
       headers: {
         "Content-Type": "application/json",
       },
@@ -48,11 +49,10 @@ class ApiClient {
       async (error) => {
         const originalRequest = error.config;
 
-        // Handle 401 Unauthorized with Refresh Token rotation
+        // Handle 401 Unauthorized with Refresh Token rotation (HttpOnly cookie)
         if (
           error.response &&
           error.response.status === 401 &&
-          this.refreshToken &&
           originalRequest &&
           !originalRequest._isRetry &&
           !originalRequest.url?.includes("/auth/refresh") &&
@@ -68,6 +68,26 @@ class ApiClient {
           } catch {
             this.clearTokens();
           }
+        }
+
+        // Handle 429 Rate Limiting
+        if (error.response && error.response.status === 429) {
+          const retryAfter =
+            error.response.headers?.["retry-after"] ||
+            error.response.headers?.["Retry-After"];
+          const serverMsg = error.response.data?.message;
+          const rateLimitMsg =
+            serverMsg ||
+            (retryAfter
+              ? `Rate limit exceeded. Please wait ${retryAfter} seconds before retrying.`
+              : "Too many requests. Please slow down and try again shortly.");
+
+          const normalizedError = new Error(rateLimitMsg);
+          normalizedError.status = 429;
+          normalizedError.isRateLimited = true;
+          normalizedError.retryAfter = retryAfter ? Number(retryAfter) : null;
+          normalizedError.response = error.response;
+          return Promise.reject(normalizedError);
         }
 
         // Format a user-friendly error message
@@ -243,15 +263,16 @@ class ApiClient {
           `${this.baseUrl}/auth/refresh`,
           {},
           {
+            withCredentials: true,
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${this.refreshToken}`,
+              ...(this.refreshToken ? { Authorization: `Bearer ${this.refreshToken}` } : {}),
             },
           }
         );
 
         if (response.data?.accessToken) {
-          this.setTokens(response.data.accessToken, response.data.refreshToken);
+          this.setTokens(response.data.accessToken, response.data.refreshToken || this.refreshToken);
           return response.data;
         }
         this.clearTokens();

@@ -77,10 +77,10 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const checkoutCart = async () => {
+  const checkoutCart = async ({ accountNumber, address } = {}) => {
     try {
       setLoading(true);
-      const placedOrders = await ordersApi.placeOrderFromCart();
+      const placedOrders = await ordersApi.placeOrderFromCart({ accountNumber, address });
       await fetchCart();
       success("Order placed successfully from cart!");
       return placedOrders;

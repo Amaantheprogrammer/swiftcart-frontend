@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { Heart, ShoppingCart, Zap, Star } from "lucide-react";
+import { Heart, ShoppingCart, Zap, Star, Sparkles } from "lucide-react";
 import { StockBadge } from "../common/Badge";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
+import { useAi } from "../../context/AiContext";
 
 export const ProductCard = ({ product, onSelectProduct, onQuickBuy }) => {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { askAboutProduct } = useAi();
   const [isAdding, setIsAdding] = useState(false);
 
   const isLiked = isInWishlist(product.id);
@@ -33,6 +35,11 @@ export const ProductCard = ({ product, onSelectProduct, onQuickBuy }) => {
   const handleQuickBuy = (e) => {
     e.stopPropagation();
     if (onQuickBuy) onQuickBuy(product);
+  };
+
+  const handleAskAi = (e) => {
+    e.stopPropagation();
+    askAboutProduct(product);
   };
 
   return (
@@ -104,6 +111,15 @@ export const ProductCard = ({ product, onSelectProduct, onQuickBuy }) => {
           </div>
 
           <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={handleAskAi}
+              className="p-2 rounded-xl bg-purple-950/40 hover:bg-purple-900/60 border border-purple-500/30 text-purple-300 hover:text-white transition-all active:scale-95"
+              title="Ask AI about this product"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+            </button>
+
             <button
               type="button"
               onClick={handleQuickBuy}

@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
+import { ChevronLeft, ChevronRight, ShoppingBag, Sparkles } from "lucide-react";
 import HeroBanner from "../layout/HeroBanner";
 import ProductFilters from "../products/ProductFilters";
 import ProductCard from "../products/ProductCard";
 import { useToast } from "../../context/ToastContext";
+import { useAi } from "../../context/AiContext";
 import productsApi from "../../api/productsApi";
 import categoriesApi from "../../api/categoriesApi";
 
 const CatalogPage = () => {
   const navigate = useNavigate();
   const { error } = useToast();
+  const { openAi, sendMessage } = useAi();
 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -106,7 +108,7 @@ const CatalogPage = () => {
 
       {/* Catalog Section */}
       <section id="catalog-section">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               Explore Marketplace
@@ -115,6 +117,15 @@ const CatalogPage = () => {
               Showing {filteredAndSortedProducts.length} verified products with real-time stock availability
             </p>
           </div>
+
+          <button
+            type="button"
+            onClick={openAi}
+            className="self-start sm:self-auto flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-950/60 to-indigo-950/60 hover:from-purple-900/80 hover:to-indigo-900/80 border border-purple-500/40 text-purple-200 text-xs font-semibold shadow-md transition-all active:scale-95"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-purple-300 animate-pulse" />
+            <span>Ask SwiftCart AI</span>
+          </button>
         </div>
 
         {/* Filters */}
@@ -159,12 +170,27 @@ const CatalogPage = () => {
             <p className="text-xs text-slate-400 leading-relaxed">
               We couldn't find any products matching your current search parameters. Try adjusting the price slider or resetting filters.
             </p>
-            <button
-              onClick={handleResetFilters}
-              className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors"
-            >
-              Reset All Filters
-            </button>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <button
+                onClick={handleResetFilters}
+                className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs transition-colors"
+              >
+                Reset All Filters
+              </button>
+
+              <button
+                onClick={() => {
+                  openAi();
+                  if (searchQuery) {
+                    sendMessage(`I am searching for "${searchQuery}". Could you recommend matching items or alternatives in the catalog?`);
+                  }
+                }}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-purple-600/30"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span>Ask AI to Find Alternatives</span>
+              </button>
+            </div>
           </div>
         ) : viewMode === "grid" ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

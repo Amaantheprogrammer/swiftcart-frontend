@@ -44,8 +44,11 @@ export const ordersApi = {
     });
   },
 
-  async placeOrderFromCart() {
-    return await apiClient.post("/orders/cart/place-order");
+  async placeOrderFromCart({ accountNumber, address } = {}) {
+    return await apiClient.post("/orders/cart/place-order", {
+      accountNumber: accountNumber || "ACC-CART-ORDER",
+      address: address || undefined,
+    });
   },
 
   async cancelOrder(orderId) {

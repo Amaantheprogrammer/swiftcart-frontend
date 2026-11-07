@@ -39,16 +39,24 @@ export const CheckoutModal = ({
 
     setIsPlacing(true);
     try {
+      const targetAccountNumber =
+        paymentMethod === "BANK_TRANSFER"
+          ? accountNumber.trim()
+          : (accountNumber?.trim() || "ACC-COD-PAYMENT");
+
       if (isDirect) {
         const order = await buyDirect({
           productId: directItem.product.id,
           quantity: directItem.quantity,
-          address,
-          accountNumber: paymentMethod === "BANK_TRANSFER" ? accountNumber : undefined,
+          address: address.trim(),
+          accountNumber: paymentMethod === "BANK_TRANSFER" ? targetAccountNumber : undefined,
         });
         setPlacedOrderDetails(order);
       } else {
-        const orders = await checkoutCart();
+        const orders = await checkoutCart({
+          address: address.trim(),
+          accountNumber: targetAccountNumber,
+        });
         setPlacedOrderDetails(Array.isArray(orders) ? orders[0] : orders);
       }
       setIsCompleted(true);

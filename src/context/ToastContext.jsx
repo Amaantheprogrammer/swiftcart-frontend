@@ -40,8 +40,8 @@ export const ToastProvider = ({ children }) => {
   return (
     <ToastContext.Provider value={{ addToast, removeToast, success, error, info, warning }}>
       {children}
-      {/* Toast container overlay */}
-      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none">
+      {/* Toast container overlay positioned above floating assistant button */}
+      <div className="fixed bottom-24 right-5 sm:right-6 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none">
         {toasts.map((toast) => {
           let border = "border-slate-800";
           let bg = "bg-slate-900/95";

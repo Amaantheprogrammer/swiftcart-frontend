@@ -22,6 +22,15 @@ A high-performance, dark-themed, responsive e-commerce web application engineere
 
 ## ⚡ Overview & Features
 
+- **🤖 SwiftCart AI Assistant (`swiftcart-ai` Integration):**
+  - Integrated with Python FastAPI microservice (`POST /ai/chat` & `GET /products`).
+  - ChromaDB semantic vector search and Google Gemini powered shopping advice.
+  - Floating AI assistant drawer with quick suggestion chips, conversation history, and rich markdown rendering.
+  - Embedded interactive product recommendation cards directly inside chat messages with "View" and "Add to Cart" shortcuts.
+  - "Ask SwiftCart AI About This Product" deep-link on product pages and catalog cards.
+  - Configurable AI service host (default `http://localhost:8000`) with live ping monitor in the status banner.
+- **🛡️ Rate Limiting & Resilience (HTTP 429):**
+  - Graceful handling of Bucket4j rate limiting with countdown messages and `Retry-After` header extraction.
 - **🛍️ Complete Marketplace Catalog:**
   - Dynamic category filters (`/categories`)
   - Server-assisted name search and price slider (`/products/search?name=&price=`)
@@ -66,24 +75,26 @@ A high-performance, dark-themed, responsive e-commerce web application engineere
 swiftcart-frontend/
 ├── src/
 │   ├── api/
-│   │   ├── client.js          # Unified HTTP client with JWT RTR & error handling
+│   │   ├── client.js          # Unified HTTP client with JWT RTR, cookies & 429 rate limiting
+│   │   ├── aiApi.js           # swiftcart-ai FastAPI client (chat & semantic search)
 │   │   ├── authApi.js         # /auth endpoints
 │   │   ├── productsApi.js     # /products endpoints & image management
 │   │   ├── categoriesApi.js   # /categories endpoints
 │   │   ├── cartApi.js         # /carts endpoints
-│   │   ├── ordersApi.js       # /orders endpoints
+│   │   ├── ordersApi.js       # /orders endpoints (multi-seller checkout & account validation)
 │   │   ├── wishlistApi.js     # /wishlists endpoints
-│   │   ├── usersApi.js        # /users endpoints
-│   │   └── mockData.js        # Offline fallback and demo data
+│   │   └── usersApi.js        # /users endpoints
 │   ├── context/
+│   │   ├── AiContext.jsx      # AI shopping assistant state, chat history & product linking
 │   │   ├── AuthContext.jsx    # User session, roles, and demo role switcher
 │   │   ├── CartContext.jsx    # Cart items, badge, totals, and checkout
 │   │   ├── WishlistContext.jsx# Wishlist items and toggles
-│   │   ├── ConfigContext.jsx  # Backend connection status and environment switch
+│   │   ├── ConfigContext.jsx  # Backend & AI connection status and environment switch
 │   │   └── ToastContext.jsx   # Animated toast alerts
 │   ├── components/
 │   │   ├── common/            # Modal, Badge, ConfigModal
 │   │   ├── layout/            # Navbar, HeroBanner, Footer, BackendStatusBanner
+│   │   ├── ai/                # AiChatDrawer, AiFloatingButton, AiProductMiniCard, FormattedAiMessage
 │   │   ├── auth/              # AuthModal (Sign In / Sign Up / Demo Fast Login)
 │   │   ├── products/          # ProductCard, ProductGrid, ProductFilters, ProductDetailModal
 │   │   ├── cart/              # CartDrawer, CheckoutModal
