@@ -1,4 +1,3 @@
-import React from "react";
 import { useAi } from "../../context/AiContext";
 import { Sparkles, Bot } from "lucide-react";
 
@@ -10,7 +9,7 @@ export const AiFloatingButton = () => {
   return (
     <button
       onClick={openAi}
-      className="fixed bottom-6 right-6 z-40 group flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white font-bold text-xs shadow-2xl shadow-indigo-600/50 hover:shadow-indigo-600/70 border border-white/20 transition-all duration-300 hover:scale-105 active:scale-95 animate-fade-in"
+      className="fixed bottom-6 right-6 z-40 group flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white font-bold text-xs shadow-2xl shadow-indigo-600/50 hover:shadow-indigo-600/70 border border-white/20 transition-all duration-300 hover:scale-105 active:scale-95 animate-fade-in"
       aria-label="Open SwiftCart AI Shopping Assistant"
       title="Open SwiftCart AI Assistant"
     >
