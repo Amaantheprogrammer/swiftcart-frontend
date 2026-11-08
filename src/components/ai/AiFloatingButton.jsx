@@ -1,5 +1,5 @@
 import { useAi } from "../../context/AiContext";
-import { Sparkles, Bot } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export const AiFloatingButton = () => {
   const { isAiOpen, openAi, isAiOnline } = useAi();
@@ -23,7 +23,7 @@ export const AiFloatingButton = () => {
       </div>
 
       <div className="flex flex-col text-left">
-        <span className="text-white font-extrabold tracking-wide text-xs">SwiftCart AI</span>
+        <span className="text-white font-extrabold tracking-wide text-xs">Swift AI</span>
         <span className="text-[10px] text-indigo-100 font-medium hidden sm:inline">
           Shopping Assistant
         </span>

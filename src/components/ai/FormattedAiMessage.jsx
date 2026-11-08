@@ -1,5 +1,3 @@
-import React from "react";
-
 // Lightweight markdown renderer without external heavy deps
 export const FormattedAiMessage = ({ content }) => {
   if (!content) return null;

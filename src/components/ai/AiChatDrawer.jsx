@@ -96,7 +96,7 @@ export const AiChatDrawer = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-white text-base">SwiftCart AI</h3>
+                  <h3 className="font-bold text-white text-base">Swift AI</h3>
                   <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-300 font-mono">
                     Assistant
                   </span>
