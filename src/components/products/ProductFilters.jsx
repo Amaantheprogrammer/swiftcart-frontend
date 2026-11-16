@@ -1,4 +1,3 @@
-import React from "react";
 import { Search, SlidersHorizontal, X, ArrowUpDown, LayoutGrid, List } from "lucide-react";
 
 export const ProductFilters = ({

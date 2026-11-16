@@ -1,7 +1,8 @@
 import axios from "axios";
+import { SWIFTCART_AI_BASE_URL } from "../util/env.util";
 
 const STORAGE_KEY_AI_URL = "swiftcart_ai_url";
-export const DEFAULT_AI_URL = "https://swiftcart-ai-zjyc.onrender.com";
+export const DEFAULT_AI_URL = SWIFTCART_AI_BASE_URL;
 
 class AiApiClient {
   constructor() {

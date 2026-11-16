@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Heart, ShoppingCart, Zap, Star, Sparkles } from "lucide-react";
 import { StockBadge } from "../common/Badge";
 import { useCart } from "../../context/CartContext";
@@ -60,7 +60,7 @@ export const ProductCard = ({ product, onSelectProduct, onQuickBuy }) => {
         />
 
         {/* Gradient overlay on image */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20 pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-transparent to-black/20 pointer-events-none" />
 
         {/* Top badges */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">

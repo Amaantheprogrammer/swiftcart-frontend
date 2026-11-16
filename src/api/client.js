@@ -1,11 +1,12 @@
 import axios from "axios";
+import { SWIFTCART_BASE_URL } from "../util/env.util";
 
 // Unified Axios HTTP client with JWT handling, Refresh Token Rotation, and connection management
 const STORAGE_KEY_TOKEN = "swiftcart_access_token";
 const STORAGE_KEY_REFRESH = "swiftcart_refresh_token";
 const STORAGE_KEY_CONFIG = "swiftcart_api_config";
 
-export const DEFAULT_RENDER_BASE_URL = "https://e-commercebackendproject.onrender.com";
+export const DEFAULT_RENDER_BASE_URL = SWIFTCART_BASE_URL;
 
 class ApiClient {
   constructor() {

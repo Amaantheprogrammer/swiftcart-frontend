@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Modal from "../common/Modal";
 import { Heart, ShoppingCart, Zap, Star, ShieldCheck, Truck, RotateCcw, Sparkles } from "lucide-react";
 import { StockBadge } from "../common/Badge";
@@ -174,7 +174,7 @@ export const ProductDetailModal = ({ product, isOpen, onClose, onQuickBuy }) => 
                 type="button"
                 onClick={handleBuyNow}
                 disabled={product.stockQuantity <= 0}
-                className="py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/25 active:scale-[0.98]"
+                className="py-3 px-4 rounded-xl bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/25 active:scale-[0.98]"
               >
                 <Zap className="w-4 h-4 text-amber-300" />
                 <span>Instant Buy</span>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -122,7 +122,7 @@ const ProductPage = () => {
           <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
           <span className="text-slate-500">{product.categoryName || "Products"}</span>
           <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-          <span className="text-slate-200 font-medium line-clamp-1 max-w-[200px]">{product.name}</span>
+          <span className="text-slate-200 font-medium line-clamp-1 max-w-50">{product.name}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
@@ -221,7 +221,7 @@ const ProductPage = () => {
             </div>
 
             {/* Price */}
-            <div className="p-5 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800/60 border border-slate-800">
+            <div className="p-5 rounded-2xl bg-linear-to-r from-slate-900 to-slate-800/60 border border-slate-800">
               <div className="flex items-baseline gap-3">
                 <span className="text-4xl sm:text-5xl font-black text-white">
                   ${Number(product.price).toFixed(2)}
@@ -311,7 +311,7 @@ const ProductPage = () => {
                   type="button"
                   onClick={handleBuyNow}
                   disabled={product.stockQuantity <= 0}
-                  className="py-4 px-5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm flex items-center justify-center gap-2.5 transition-all shadow-xl shadow-indigo-600/30 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+                  className="py-4 px-5 rounded-2xl bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm flex items-center justify-center gap-2.5 transition-all shadow-xl shadow-indigo-600/30 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
                 >
                   <Zap className="w-5 h-5 text-amber-300" />
                   Buy Now
@@ -335,7 +335,7 @@ const ProductPage = () => {
               <button
                 type="button"
                 onClick={() => askAboutProduct(product)}
-                className="w-full py-3 px-5 rounded-2xl bg-gradient-to-r from-purple-950/70 via-indigo-950/70 to-slate-900 border border-purple-500/40 hover:border-purple-500/80 text-purple-200 hover:text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-950/30 transition-all active:scale-[0.98] group"
+                className="w-full py-3 px-5 rounded-2xl bg-linear-to-r from-purple-950/70 via-indigo-950/70 to-slate-900 border border-purple-500/40 hover:border-purple-500/80 text-purple-200 hover:text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-950/30 transition-all active:scale-[0.98] group"
               >
                 <Sparkles className="w-4 h-4 text-purple-300 group-hover:rotate-12 transition-transform" />
                 <span>Ask SwiftCart AI About This Product</span>
